@@ -4,7 +4,8 @@ import Todo from './Todo'
 export default class TodoList extends React.Component{
   state = {
     todos: [],
-    todosToShow: "all"
+    todosToShow: "all",
+    toggleAll: true
   };
 
   addTodo = (todo) =>{
@@ -32,7 +33,32 @@ export default class TodoList extends React.Component{
   updateTodosToShow = (value) =>{
     this.setState({
       todosToShow:value
-    })
+    });
+  };
+
+  handleDeleteTodo =(id) => {
+    this.setState(state =>({
+      todos:state.todos.filter(todo => todo.id !== id)
+    }));
+  };
+
+  removeAllTodoThatAreCompleted = () => {
+    this.setState(state => ({
+      todos:this.state.todos.filter(todo => !todo.complete)
+    }));
+  };
+
+  toggleAll = () => {
+    this.setState(state =>({
+      todos: state.todos.map((todo) => {
+        return {
+          id:todo.id,
+          text: todo.text,
+          complete: state.toggleAll
+        };
+      }),
+      toggleAll: !state.toggleAll
+    }));
   };
 
   render () {
@@ -50,15 +76,26 @@ export default class TodoList extends React.Component{
       {todos.map(todo => (
         <Todo
         key={todo.id}
+        onDelete={()=>{this.handleDeleteTodo(todo.id)}}
         toggleComplete={() =>this.toggleComplete(todo.id)}
         todo={todo}/>
       ))}
-      <div>Active left:
+      <div  style={{display:"flex", justifyContent:'center'}}>Active left:
       {this.state.todos.filter(todo=> !todo.complete && todo.text !== '').length}
       </div>
-      <button onClick={()=>this.updateTodosToShow("all")}>All</button>
-      <button onClick={()=>this.updateTodosToShow("active")}>Active</button>
-      <button onClick={()=>this.updateTodosToShow("completed")}>Completed</button>
-    </div>);
+      <div  style={{display:"flex", justifyContent:'center'}}>
+        <button onClick={()=>this.updateTodosToShow("all")}>All</button>
+        <button onClick={()=>this.updateTodosToShow("active")}>Active</button>
+        <button onClick={()=>this.updateTodosToShow("completed")}>Completed</button>
+      </div>
+      {this.state.todos.some(todo => todo.complete) ? (<div  style={{display:"flex", justifyContent:'center'}}>
+        <button onClick={this.removeAllTodoThatAreCompleted}>Remove all complete todos</button>
+      </div>) :null}
+      <div style={{display:"flex", justifyContent:'center'}}>
+        <button onClick={this.toggleAll}>Toggle All</button>
+      </div>
+    </div>
+
+  );
   }
 }

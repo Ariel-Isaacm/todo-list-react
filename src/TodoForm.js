@@ -22,6 +22,7 @@ export default class TodoForm extends React.Component{
   };
   render () {
     return(
+      <div  style={{display:"flex", justifyContent:'center'}}>
     <form onSubmit={this.handleSubmit}>
       <input
          name="text"
@@ -31,6 +32,7 @@ export default class TodoForm extends React.Component{
        />
        <button onClick={this.handleSubmit}>Add Todo</button>
      </form>
+     </div>
    );
   }
 }
